@@ -1,4 +1,4 @@
-from ctypes.wintypes import RGB
+# from ctypes.wintypes import RGB
 from datetime import date, datetime 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ import matplotlib.animation as animation
 from numpy.lib.function_base import average
 
 g = 9.81
-milliSecondDelayBetweenFrames = 20
+milliSecondDelayBetweenFrames = 10
 stepsPerFrame = 32
 deltaT = float(milliSecondDelayBetweenFrames) * 0.001 / float(stepsPerFrame)
 
