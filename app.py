@@ -7,22 +7,29 @@ from pprint import pprint
 import copy
 import matplotlib.animation as animation
 from numpy.lib.function_base import average
+import numpy as np
+import hashlib
+import os
 
 
 class DoublePendulum(object):
 
-    def __init__(self, savefig=False):
+    def __init__(self, random=True, savefig=False):
         self.g = 9.81
-        self.milliSecondDelayBetweenFrames = 20
-        self.stepsPerFrame = 32
+        self.milliSecondDelayBetweenFrames = 5
+        self.stepsPerFrame = 16
         self.deltaT = float(self.milliSecondDelayBetweenFrames) * 0.001 / float(self.stepsPerFrame)
 
         # Setting pendulum arm lens and masses
-        self.m_1 = 0.1
-        self.l_1 = 0.3
+        self.m_1 = np.random.random() if random else 0.3
+        self.l_1 = np.random.random() if random else 0.3
 
-        self.m_2 = 0.10000000000000000000001
-        self.l_2 = 0.3
+        self.m_2 = np.random.random() if random else 0.1
+        self.l_2 = np.random.random() if random else 0.3
+
+        print('Initial masses (M) & arm lengths (L)')
+        print(f"M1 = {self.m_1} | M2 = {self.m_2}")
+        print(f"L1 = {self.l_1} | L2 = {self.l_2}")
 
         # at t = 0
         self.theta_1_0 = 2.1
@@ -60,7 +67,10 @@ class DoublePendulum(object):
 
         # print('Animation shown!')
         if savefig:
-            ani.save('doublePendulum.gif')
+            initial_values = bytes(str({'m1': self.m_1, 'm2': self.m_2, 'l1': self.l_1, 'l2': self.l_2}), encoding='utf-8')
+            file_id = hashlib.sha256(initial_values).hexdigest()
+            file_path = os.path.join('.', 'output', f'doublePendulum_{file_id}.gif')
+            ani.save(file_path)
 
     # @staticmethod
     def findThetaDoubleDot_1(self, theta_1, theta_2, thetaDot_1, thetaDot_2):
@@ -72,12 +82,7 @@ class DoublePendulum(object):
 
 
     def symplecticEulerOneStep(self):
-    # def findThetaDoubleDot_1(theta_1, theta_2, thetaDot_1, thetaDot_2):
-    #     return (-m_2*l_1*thetaDot_1**2*np.sin(theta_1 - theta_2)*np.cos(theta_1 - theta_2) + m_2*g*np.sin(theta_2)*np.cos(theta_1 - theta_2) - m_2*l_2*thetaDot_2**2*np.sin(theta_1 - theta_2) - (m_1 + m_2)*g*np.sin(theta_1)) / ((m_1 + m_2)*l_1 - m_2*l_1*np.cos(theta_1 - theta_2)**2)
-
-    # def findThetaDoubleDot_2(theta_1, theta_2, thetaDot_1, thetaDot_2):
-    #     return (m_2*l_2*thetaDot_2**2*np.sin(theta_1 - theta_2)*np.cos(theta_1 - theta_2) + (m_1 + m_2)*g*np.sin(theta_1)*np.cos(theta_1 - theta_2) + l_1*thetaDot_1**2*np.sin(theta_1-theta_2)*(m_1 + m_2) - g*np.sin(theta_2)*(m_1 + m_2)) / (l_1*(m_1 + m_2) - m_2*l_2*np.cos(theta_1 - theta_2)**2)
-
+    
         self.u_vector[2] += self.findThetaDoubleDot_1(self.u_vector[0], self.u_vector[1], self.u_vector[2], self.u_vector[3]) * self.deltaT
         self.u_vector[3] += self.findThetaDoubleDot_2(self.u_vector[0], self.u_vector[1], self.u_vector[2], self.u_vector[3]) * self.deltaT
 
@@ -118,7 +123,7 @@ class DoublePendulum(object):
         self.ax.set_ylim3d(-self.radiusOfGraphAxises, self.radiusOfGraphAxises)
         self.ax.set_zlim3d(-self.radiusOfGraphAxises + self.radiusOfGraphAxises*0.23, self.radiusOfGraphAxises - self.radiusOfGraphAxises*0.23)
         self.ax.view_init(40, -5)
-        self.ax.set_title('Double Pendulum')
+        # self.ax.set_title('Double Pendulum')
         self.ax.set_facecolor(self.backgroundColorRGB)
         fig.patch.set_facecolor(self.backgroundColorRGB)
         plt.axis('off')
@@ -130,7 +135,7 @@ class DoublePendulum(object):
 
         return fig, self.ax
 
-    def animation_frame(self, scatter_points=False, savefig=False):  
+    def animation_frame(self, i):  
         '''Creates animation frame for gif'''
         # scats = []
         starttime = datetime.now()
@@ -142,14 +147,17 @@ class DoublePendulum(object):
 
         #averageFps = round(i / ((datetime.now() - starttime).total_seconds()))
         #self.ax.set_title(f'average fps: {averageFps}')
-        self.ax.set_title('Double Pendulum')
+        # self.ax.set_title('Double Pendulum')
 
+        
         # self.line0.set_data(self.getAxisCoordinatesOverTimeForParticle(0, 0), self.getAxisCoordinatesOverTimeForParticle(0, 2))
         # self.line0.set_3d_properties(self.getAxisCoordinatesOverTimeForParticle(0, 1))
 
         self.line1.set_data(self.getAxisCoordinatesOverTimeForParticle(1, 0), self.getAxisCoordinatesOverTimeForParticle(1, 2))
         self.line1.set_3d_properties(self.getAxisCoordinatesOverTimeForParticle(1, 1))
 
+
+        # if bars:
         # self.bar0.set_data([0, self.l_1*np.sin(self.u_vector[0])], [0, 0])
         # self.bar0.set_3d_properties([0, -self.l_1*np.cos(self.u_vector[0])])
 
@@ -169,7 +177,7 @@ class DoublePendulum(object):
         # scats.append((self.ax.scatter(self.l_1*np.sin(self.u_vector[0]), 0, -self.l_1*np.cos(self.u_vector[0]), color=(0, 0, 1), s=10)))
         # scats.append((self.ax.scatter(self.l_1*np.sin(self.u_vector[0]) + self.l_1*np.sin(self.u_vector[1]), 0, -self.l_1*np.cos(self.u_vector[0]) - self.l_1*np.cos(self.u_vector[1]), color=(1, 0, 0), s=10)))
 
-        print('Creating animation....')
+        
 
 
     
@@ -180,7 +188,7 @@ class DoublePendulum(object):
 
 
 if __name__ == "__main__":
-    d = DoublePendulum()
+    d = DoublePendulum(savefig=True)
     # a = d.animation_frame(True)   
     # plt.show()
 
