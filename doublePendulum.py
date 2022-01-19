@@ -26,7 +26,7 @@ class DoublePendulum(object):
         """
 
         self.g = 9.81
-        self.frame_delay = 5 # Delay between frames (in ms)
+        self.frame_delay = 75 # Delay between frames (in ms)
         self.steps_per_frame = 16
         self.deltaT = float(self.frame_delay) * 0.001 / float(self.steps_per_frame)
 
@@ -70,7 +70,7 @@ class DoublePendulum(object):
         self.line1, = self.ax.plot(0, 0, 0, lw=0.5, color=self.line_color)
 
         # Create animation
-        ani = animation.FuncAnimation(self.f, func=self.animation_frame, frames=np.arange(0, 100, 1), interval=self.frame_delay)
+        ani = animation.FuncAnimation(self.f, func=self.animation_frame, frames=25, interval=self.frame_delay)
         plt.show()
 
         # print('Animation shown!')
@@ -139,8 +139,6 @@ class DoublePendulum(object):
 
         self.line1.set_data(self.getAxisCoordinatesOverTimeForParticle(1, 0), self.getAxisCoordinatesOverTimeForParticle(1, 2))
         self.line1.set_3d_properties(self.getAxisCoordinatesOverTimeForParticle(1, 1))
-
-
 
 
 if __name__ == "__main__":
