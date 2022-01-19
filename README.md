@@ -5,4 +5,4 @@ Forked from [this repo](https://github.com/OHUGITHO/DoublePendulum.git). Want to
 
 
 Sample output of the `DoublePendulum` module
-[](https://github.com/andrewbowen19/DoublePendulum/tree/dev)
+![](doublePendulum.gif)
