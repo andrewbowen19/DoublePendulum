@@ -5,4 +5,4 @@ Forked from [this repo](https://github.com/OHUGITHO/DoublePendulum.git). Want to
 
 
 Sample output of the `DoublePendulum` module
-[](doublePendulum.gif?raw=true)
+[](doublePendulum.gif?raw=True)
