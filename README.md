@@ -1,8 +1,11 @@
 # DoublePendulum
 
 
-Forked from [this repo](https://github.com/OHUGITHO/DoublePendulum.git). Want to include the final path plot and manipulate the line drawing.
+This git repo is forked from [here](https://github.com/OHUGITHO/DoublePendulum.git). 
 
 
-Sample output of the `DoublePendulum` module
+Below is a sample gif created by the `DoublePendulum` module
 ![](output/doublePendulum.gif)
+
+---
+## Usage
